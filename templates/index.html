@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Feedback System - AI Conversational Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Chart.js for dashboard visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <!-- Particle background -->
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="container">
+        <header>
+            <h1>🏥 Healthcare Feedback System</h1>
+            <p class="subtitle">AI-Powered Conversational Feedback Collection</p>
+        </header>
+
+        <main>
+            <!-- Welcome Screen -->
+            <div id="welcome-screen" class="screen active">
+                <div class="welcome-content">
+                    <h2>Welcome!</h2>
+                    <p>I'm your empathetic healthcare feedback assistant.</p>
+                    <p>I'm here to listen about your healthcare experience today. You're in control - share as much or
+                        as little as you'd like, and we'll have a natural conversation.</p>
+                    <div class="voice-info">
+                        <p>🎤 <strong>Voice Input:</strong> Click the microphone to speak</p>
+                        <p>🔊 <strong>Voice Output:</strong> Responses will be read aloud automatically</p>
+                    </div>
+                    <button id="start-conversation-btn" class="btn btn-primary">Start Conversation</button>
+                </div>
+            </div>
+
+            <!-- Conversation Screen -->
+            <div id="conversation-screen" class="screen">
+                <div class="conversation-header">
+                    <h2>Conversation</h2>
+                    <button id="end-conversation-btn" class="btn btn-secondary btn-small">End Conversation</button>
+                </div>
+
+                <div id="chat-container" class="chat-container">
+                    <!-- Messages will be dynamically added here -->
+                </div>
+
+                <div class="input-container">
+                    <div class="response-input-wrapper">
+                        <textarea id="message-input" placeholder="Type your message here or use the microphone..."
+                            rows="3"></textarea>
+                        <div class="button-group">
+                            <button id="record-btn" class="btn btn-mic" title="Record Voice Message">
+                                🎤 Record
+                            </button>
+                            <button id="stop-record-btn" class="btn btn-stop" style="display: none;"
+                                title="Stop Recording">
+                                ⏹ Stop
+                            </button>
+                            <button id="send-btn" class="btn btn-primary">Send</button>
+                        </div>
+                        <div id="recording-status" class="recording-status"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Screen -->
+            <div id="analysis-screen" class="screen">
+                <div class="analysis-content">
+                    <h2>Analyzing Your Feedback...</h2>
+                    <div class="loader"></div>
+                    <p>Please wait while our AI analyzes your conversation.</p>
+                </div>
+            </div>
+
+            <!-- Results/Dashboard Screen -->
+            <div id="results-screen" class="screen">
+                <div class="results-content dashboard">
+                    <h2>📊 Patient Feedback Dashboard</h2>
+
+                    <!-- Overall Score -->
+                    <div id="overall-score" class="dashboard-score"></div>
+
+                    <!-- Charts Grid -->
+                    <div class="charts-grid">
+                        <!-- Radar Chart: Patient Felt Taken Seriously -->
+                        <div class="chart-card">
+                            <h3>Patient Experience Radar</h3>
+                            <canvas id="radar-chart"></canvas>
+                        </div>
+
+                        <!-- Stacked Bar: Confidence in Treatment -->
+                        <div class="chart-card">
+                            <h3>Confidence in Diagnosis & Treatment</h3>
+                            <canvas id="confidence-chart"></canvas>
+                        </div>
+
+                        <!-- Line Chart: Duration & Staff Behavior -->
+                        <div class="chart-card chart-wide">
+                            <h3>Satisfaction Metrics</h3>
+                            <canvas id="metrics-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Summary Bullets -->
+                    <div class="summary-section">
+                        <h3>📋 Key Summary Points</h3>
+                        <ul id="summary-bullets" class="summary-bullets"></ul>
+                    </div>
+
+                    <div class="button-group">
+                        <button id="new-feedback-btn" class="btn btn-primary">New Conversation</button>
+                        <button id="view-history-btn" class="btn btn-secondary">View History</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Screen -->
+            <div id="history-screen" class="screen">
+                <div class="history-content">
+                    <h2>Feedback History</h2>
+                    <button id="back-to-results-btn" class="btn btn-secondary">← Back</button>
+                    <div id="history-list" class="history-list"></div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>LLM-Based Healthcare Feedback Gathering System</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+
+</html>
