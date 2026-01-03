@@ -573,7 +573,64 @@ class ConversationalFeedbackApp {
 document.addEventListener('DOMContentLoaded', () => {
     new ConversationalFeedbackApp();
     new ParticleBackground();
+    new ParallaxCard();
 });
+
+// ... (ParticleBackground class)
+
+// ============================================================================
+// 3D PARALLAX CARD EFFECT
+// ============================================================================
+
+class ParallaxCard {
+    constructor() {
+        this.container = document.querySelector('.container');
+        if (!this.container) return;
+
+        this.header = document.querySelector('header');
+        this.chatContainer = document.querySelector('.chat-container');
+        this.inputContainer = document.querySelector('.input-container');
+
+        this.setupEvents();
+    }
+
+    setupEvents() {
+        this.container.addEventListener('mousemove', (e) => {
+            this.update(e);
+        });
+
+        this.container.addEventListener('mouseleave', () => {
+            this.reset();
+        });
+    }
+
+    update(e) {
+        const { clientX, clientY } = e;
+        const rect = this.container.getBoundingClientRect();
+
+        // Calculate center of the card
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        // Calculate rotation based on cursor position relative to card center
+        // Reduced tilt sensitivity (higher divisor = less tilt)
+        const rotateY = (clientX - centerX) / 60;
+        const rotateX = (centerY - clientY) / 60;
+
+        // Apply rotation to container
+        this.container.style.transform = `perspective(1000px) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
+
+        // Parallax for inner elements (pop out effect)
+        if (this.header) this.header.style.transform = `translateZ(30px)`;
+        if (this.chatContainer) this.chatContainer.style.transform = `translateZ(20px)`;
+    }
+
+    reset() {
+        this.container.style.transform = `perspective(1000px) rotateY(0deg) rotateX(0deg)`;
+        if (this.header) this.header.style.transform = `translateZ(0px)`;
+        if (this.chatContainer) this.chatContainer.style.transform = `translateZ(0px)`;
+    }
+}
 
 // ============================================================================
 // PARTICLE BACKGROUND - Spreading dots effect

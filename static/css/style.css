@@ -27,28 +27,30 @@ body {
 }
 
 /* 3D Card Container */
+/* 3D Card Container - Glassmorphism */
 .container {
-    max-width: 900px;
+    max-width: 1200px;
     margin: 40px auto;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-radius: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
     box-shadow:
-        0 25px 50px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(255, 255, 255, 0.1);
+        0 25px 50px rgba(0, 0, 0, 0.5);
     overflow: hidden;
     position: relative;
     z-index: 1;
     transform-style: preserve-3d;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.5s ease-out, box-shadow 0.3s ease;
+    /* Fast transform for JS parallax */
 }
 
 .container:hover {
-    transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateY(-10px);
     box-shadow:
-        0 35px 70px rgba(102, 126, 234, 0.4),
-        0 15px 35px rgba(118, 75, 162, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.2),
-        inset 0 0 60px rgba(102, 126, 234, 0.05);
+        0 35px 70px rgba(102, 126, 234, 0.132),
+        0 0 0 1px rgba(255, 255, 255, 0.3),
+        inset 0 0 60px rgba(102, 126, 234, 0.126);
 }
 
 /* Glow effect on container */
@@ -59,27 +61,87 @@ body {
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(135deg, #667eea, #764ba2, #667eea);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.184),rgba(118, 75, 162, 0.205));
     border-radius: 22px;
     z-index: -1;
     opacity: 0;
     transition: opacity 0.3s ease;
+    filter: blur(10px);
 }
 
 .container:hover::before {
-    opacity: 0.7;
+    opacity: 0.5;
 }
 
 header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: transparent;
     color: white;
     padding: 30px;
     text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 header h1 {
-    font-size: 2.5em;
+    font-size: 3em;
     margin-bottom: 10px;
+    font-weight: 800;
+    cursor: default;
+}
+
+/* Text Hover Animation: Gradient Outline Effect */
+.animated-text {
+    color: white;
+    position: relative;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    /* Create a transparent text with stroke */
+    -webkit-text-fill-color: white;
+    /* Start solid white */
+    -webkit-text-stroke: 0px transparent;
+}
+
+.animated-text:hover {
+    -webkit-text-fill-color: transparent;
+    /* Make fill transparent on hover */
+    background-image: linear-gradient(to right, #00c6ff, #0072ff, #00c6ff);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-stroke: 2px transparent;
+    /* stroke will take the background gradient? No, standard stroke is strictly color */
+
+    /* Alternate approach for 'outline gradient': we need SVG or background clip trickery */
+    /* Let's do the "glow" outline effect which is robust */
+    filter: drop-shadow(0 0 2px rgba(0, 198, 255, 0.2));
+    animation: gradientFlow 2s linear infinite;
+    transform: scale(1.05);
+    display: inline-block;
+}
+
+/* Background Highlight for Content */
+.subtitle,
+.welcome-content p,
+.voice-info p,
+.score-text {
+    transition: all 0.3s ease;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+.subtitle:hover,
+.welcome-content p:hover,
+.voice-info p:hover,
+.score-text:hover {
+    background: rgba(255, 255, 255, 0.15);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+    cursor: default;
+    color: rgba(25, 164, 229, 0.522);
+}
+
+@keyframes gradientFlow {
+    to {
+        background-position: 200% center;
+    }
 }
 
 .subtitle {
