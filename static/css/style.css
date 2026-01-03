@@ -512,14 +512,14 @@ main {
 }
 
 .chart-card {
-    background: #f8f9fa;
-    border-radius: 12px;
+    background: #b8b8b8fe;
+    border-radius: 9px;
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .chart-card h3 {
-    color: #333;
+    color: #000000;
     font-size: 1em;
     margin-bottom: 15px;
     text-align: center;
