@@ -210,3 +210,4 @@ class ConversationManager:
             f"session_id={self.session_id}, "
             f"active={self.is_active})"
         )
+

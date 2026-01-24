@@ -363,3 +363,4 @@ Keep responses brief, empathetic, and natural. Respond as a caring listener woul
             f"messages={len(self.conversation_history)}, "
             f"topics={len(self.topics_discussed)})"
         )
+

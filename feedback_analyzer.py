@@ -179,3 +179,4 @@ class FeedbackAnalyzer:
         lines.append("\n" + "=" * 60)
         
         return "\n".join(lines)
+
