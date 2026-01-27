@@ -33,7 +33,7 @@ Vital Sense AI functions as an empathetic virtual assistant that engages patient
 
 ```bash
 # Clone & install
-git clone https://github.com/your-username/Vital-Sense-AI.git
+git clone https://github.com/ArpitP777/Vital-Sense-AI.git
 cd Vital-Sense-AI
 pip install -r requirements.txt
 
