@@ -1,12 +1,3 @@
-"""
-prompts.py
-
-Stores system prompts and few-shot examples for the LLM.
-Ensures the LLM outputs valid structured JSON for healthcare feedback analysis
-and conducts natural, empathetic conversations.
-"""
-
-# System prompt for the real-time conversational assistant
 CONVERSATIONAL_SYSTEM_PROMPT = """You are a compassionate, attentive, and professional healthcare feedback assistant.
 Your goal is to collect feedback from a patient about their recent healthcare experience through a natural conversation.
 
@@ -28,7 +19,6 @@ IMPORTANT:
 *   NEVER break character. You are a helpful AI assistant gathering feedback.
 """
 
-# System prompt that guides the LLM's behavior for ANALYSIS
 SYSTEM_PROMPT_BASE = """You are a healthcare feedback analysis expert. Your task is to analyze patient conversations and extract structured feedback for a clinical dashboard.
 
 Analyze the given conversation and extract:
@@ -67,7 +57,6 @@ Output ONLY valid JSON in this exact format:
 
 Be objective and base your analysis solely on the conversation content. If information is not mentioned, use neutral values (3)."""
 
-# Few-shot examples
 FEW_SHOT_EXAMPLES = """
 Example 1:
 Conversation:
@@ -127,29 +116,12 @@ Expected Output:
 }
 """
 
-# Helper function to get the system prompt (includes few-shot examples)
 def get_system_prompt() -> str:
-    """
-    Returns the complete system prompt for the LLM including few-shot examples.
-    
-    Returns:
-        Complete system prompt string
-    """
     return f"""{SYSTEM_PROMPT_BASE}
 
 {FEW_SHOT_EXAMPLES}"""
 
-# Helper function to construct the user message with conversation
 def get_user_message(conversation: str) -> str:
-    """
-    Constructs the user message for LLM analysis.
-    
-    Args:
-        conversation: The full conversation transcript
-        
-    Returns:
-        User message string for the LLM
-    """
     return f"""Now analyze this conversation:
 
 {conversation}

@@ -1,11 +1,3 @@
-"""
-llm_client.py
-
-Handles communication with the LLM API.
-Abstracted to allow easy swapping of LLM providers.
-Supports both real-time chat and structured analysis.
-"""
-
 import json
 import os
 import random
@@ -15,30 +7,17 @@ from abc import ABC, abstractmethod
 
 
 class LLMProvider(ABC):
-    """Abstract base class for LLM providers."""
     
     @abstractmethod
     def analyze_conversation(self, conversation: str, system_prompt: str) -> str:
-        """Analyze a conversation and return structured JSON response."""
         pass
 
     @abstractmethod
     def chat_completion(self, messages: List[Dict[str, str]], system_prompt: str) -> str:
-        """
-        Generate a conversational response based on history.
-        
-        Args:
-            messages: List of message dictionaries [{'role': 'user', 'content': ...}]
-            system_prompt: The system instruction for the persona
-            
-        Returns:
-            The assistant's text response
-        """
         pass
 
 
 class OpenAIProvider(LLMProvider):
-    """OpenAI API implementation."""
     
     def __init__(self, api_key: Optional[str] = None):
         try:
@@ -67,13 +46,12 @@ class OpenAIProvider(LLMProvider):
 
     def chat_completion(self, messages: List[Dict[str, str]], system_prompt: str) -> str:
         try:
-            # Prepend system prompt to messages
             full_messages = [{"role": "system", "content": system_prompt}] + messages
             
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=full_messages,
-                temperature=0.7,  # Higher for more natural conversation
+                temperature=0.7,
             )
             return response.choices[0].message.content
         except Exception as e:
@@ -81,7 +59,6 @@ class OpenAIProvider(LLMProvider):
 
 
 class AnthropicProvider(LLMProvider):
-    """Anthropic Claude API implementation."""
     
     def __init__(self, api_key: Optional[str] = None):
         try:
@@ -107,9 +84,6 @@ class AnthropicProvider(LLMProvider):
 
     def chat_completion(self, messages: List[Dict[str, str]], system_prompt: str) -> str:
         try:
-            # Anthropic expects specific role alternation, ensuring we start with user if needed
-            # But the inputs are usually clean. System prompt is separate parameter.
-            
             response = self.client.messages.create(
                 model=self.model,
                 max_tokens=1024,
@@ -122,13 +96,10 @@ class AnthropicProvider(LLMProvider):
 
 
 class MockProvider(LLMProvider):
-    """Mock provider for testing without API access."""
     
     def analyze_conversation(self, conversation: str, system_prompt: str) -> str:
-        """Mock analysis returning dashboard-ready data."""
         conversation_lower = conversation.lower()
         
-        # Negative experience
         if any(word in conversation_lower for word in ["bad", "terrible", "long", "wait"]):
             return json.dumps({
                 "satisfaction_score": 2,
@@ -150,7 +121,6 @@ class MockProvider(LLMProvider):
                 ]
             })
         
-        # Positive experience
         elif any(word in conversation_lower for word in ["good", "great", "excellent", "amazing"]):
             return json.dumps({
                 "satisfaction_score": 5,
@@ -173,7 +143,6 @@ class MockProvider(LLMProvider):
                 ]
             })
         
-        # Rude staff experience
         elif any(word in conversation_lower for word in ["rude", "mean", "dismissive", "ignored"]):
             return json.dumps({
                 "satisfaction_score": 1,
@@ -196,7 +165,6 @@ class MockProvider(LLMProvider):
                 ]
             })
         
-        # Neutral experience
         else:
             return json.dumps({
                 "satisfaction_score": 3,
@@ -219,15 +187,12 @@ class MockProvider(LLMProvider):
             })
 
     def chat_completion(self, messages: List[Dict[str, str]], system_prompt: str) -> str:
-        """Mock conversational responses with variety based on context."""
         
         last_message = messages[-1]["content"].lower() if messages else ""
         num_exchanges = len([m for m in messages if m.get("role") == "user"])
         
-        # Simulate thinking time
         time.sleep(0.3)
         
-        # First message / greeting
         if num_exchanges <= 1:
             greetings = [
                 "Hello! I'm here to hear about your healthcare visit today. How was your overall experience?",
@@ -236,7 +201,6 @@ class MockProvider(LLMProvider):
             ]
             return random.choice(greetings)
         
-        # Negative sentiment responses
         if any(w in last_message for w in ["bad", "terrible", "awful", "horrible", "worst"]):
             negatives = [
                 "I'm truly sorry to hear that. That sounds very difficult. Can you tell me more about what happened?",
@@ -261,7 +225,6 @@ class MockProvider(LLMProvider):
             ]
             return random.choice(rude_responses)
         
-        # Positive sentiment responses
         if any(w in last_message for w in ["good", "great", "excellent", "amazing", "wonderful"]):
             positives = [
                 "That's wonderful to hear! What made it such a positive experience?",
@@ -278,7 +241,6 @@ class MockProvider(LLMProvider):
             ]
             return random.choice(friendly_responses)
         
-        # Topic-specific responses
         if any(w in last_message for w in ["doctor", "physician", "dr"]):
             return random.choice([
                 "How was your interaction with the doctor? Did they address all your concerns?",
@@ -307,11 +269,9 @@ class MockProvider(LLMProvider):
                 "What did you think about the overall atmosphere of our facility?"
             ])
         
-        # Off-topic redirect
         if any(w in last_message for w in ["marketing", "sales", "weather", "sports", "politics"]):
             return "I appreciate the conversation! Though I'd love to hear more about your healthcare experience specifically. Anything else you'd like to share about your visit?"
         
-        # Default varied responses based on conversation progress
         if num_exchanges == 2:
             defaults = [
                 "Thank you for sharing that. Is there anything specific about the staff you'd like to mention?",
@@ -343,7 +303,6 @@ class MockProvider(LLMProvider):
 
 
 class LLMClient:
-    """Main LLM client that wraps provider implementations."""
     
     def __init__(self, provider: str = "mock", api_key: Optional[str] = None):
         provider_lower = provider.lower()
@@ -359,9 +318,7 @@ class LLMClient:
             self.provider = MockProvider()
     
     def analyze_feedback(self, conversation: str, system_prompt: str) -> Dict:
-        """Analyze healthcare feedback conversation and return structured data."""
         try:
-            # Some providers might return code blocks, strip them
             raw_response = self.provider.analyze_conversation(conversation, system_prompt)
             clean_response = raw_response.strip()
             
@@ -372,7 +329,6 @@ class LLMClient:
                 
             return json.loads(clean_response)
         except json.JSONDecodeError:
-            # Fallback for simple errors
             print(f"Error parsing JSON from LLM: {raw_response[:100]}...")
             return {
                 "satisfaction_score": 3, 
@@ -384,5 +340,4 @@ class LLMClient:
             return {}
 
     def chat(self, messages: List[Dict[str, str]], system_prompt: str) -> str:
-        """Get a conversational response."""
         return self.provider.chat_completion(messages, system_prompt)
